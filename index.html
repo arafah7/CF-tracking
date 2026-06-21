@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ICPC Codeforces Tracker</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section id="authView" class="auth-layout">
+        <div class="brand-panel">
+          <div class="brand-mark">CF</div>
+          <h1>ICPC winners.</h1>
+          <p>Track problems,win icpc,thank me later,pray for golam and rishank  .</p>
+        </div>
+
+        <form id="authForm" class="auth-card">
+          <div>
+            <p class="eyebrow">Private workspace</p>
+            <h2 id="authTitle">Sign in</h2>
+          </div>
+          <label>
+            Email
+            <input id="emailInput" type="email" autocomplete="email" required placeholder="you@example.com" />
+          </label>
+          <label>
+            Password
+            <input id="passwordInput" type="password" autocomplete="current-password" required placeholder="Minimum 6 characters" />
+          </label>
+          <p id="authError" class="form-error" role="alert"></p>
+          <button class="primary-button" type="submit">Continue</button>
+          <button id="toggleAuthMode" class="text-button" type="button">Create a new account</button>
+        </form>
+      </section>
+
+      <section id="dashboardView" class="dashboard hidden">
+        <aside class="sidebar">
+          <div class="sidebar-head">
+            <div class="brand-mark small">CF</div>
+            <div>
+              <strong>Prep Tracker</strong>
+              <span id="userEmail"></span>
+            </div>
+          </div>
+          <nav aria-label="Dashboard sections">
+            <button class="nav-button active" data-section="overview">Overview</button>
+            <button class="nav-button" data-section="contests">Contests</button>
+            <button class="nav-button" data-section="problems">Problems</button>
+            <button class="nav-button" data-section="profile">Profile</button>
+          </nav>
+          <button id="signOutButton" class="ghost-button" type="button">Sign out</button>
+        </aside>
+
+        <section class="content">
+          <header class="topbar">
+            <div>
+              <p class="eyebrow">ICPC training room</p>
+              <h2 id="sectionTitle">Overview</h2>
+            </div>
+            <button id="openContestModal" class="primary-button" type="button">Add contest</button>
+          </header>
+
+          <section id="overviewSection" class="section-view">
+            <div class="metric-grid">
+              <article class="metric-card">
+                <span>Total solved</span>
+                <strong id="metricSolved">0</strong>
+              </article>
+              <article class="metric-card">
+                <span>Average solve time</span>
+                <strong id="metricAvgTime">0m</strong>
+              </article>
+              <article class="metric-card">
+                <span>Intuition rate</span>
+                <strong id="metricIntuition">0%</strong>
+              </article>
+              <article class="metric-card">
+                <span>Active attempts</span>
+                <strong id="metricActive">0</strong>
+              </article>
+            </div>
+
+            <div class="analytics-grid">
+              <article class="panel">
+                <div class="panel-head">
+                  <h3>Status mix</h3>
+                  <span id="statusTotal">0 problems</span>
+                </div>
+                <div id="statusBars" class="bar-list"></div>
+              </article>
+              <article class="panel">
+                <div class="panel-head">
+                  <h3>Recent contests</h3>
+                  <span id="contestCount">0 logged</span>
+                </div>
+                <div id="recentContests" class="compact-list"></div>
+              </article>
+            </div>
+          </section>
+
+          <section id="contestsSection" class="section-view hidden">
+            <article class="panel import-panel">
+              <div class="panel-head">
+                <div>
+                  <h3>Import from Codeforces</h3>
+                  <span>Round number plus division</span>
+                </div>
+              </div>
+              <div class="import-row">
+                <label>
+                  Round
+                  <input id="roundInput" placeholder="1045 or 1045 div 2" />
+                </label>
+                <label>
+                  Division
+                  <select id="divisionInput">
+                    <option value="Div. 2">Div. 2</option>
+                    <option value="Div. 1">Div. 1</option>
+                    <option value="Div. 1 + Div. 2">Div. 1 + Div. 2</option>
+                    <option value="Div. 3">Div. 3</option>
+                    <option value="Div. 4">Div. 4</option>
+                  </select>
+                </label>
+                <button id="importContestButton" class="primary-button" type="button">Fetch contest</button>
+              </div>
+              <p id="importStatus" class="helper-text" role="status"></p>
+            </article>
+            <div id="contestList" class="contest-list"></div>
+          </section>
+
+          <section id="problemsSection" class="section-view hidden">
+            <div class="toolbar">
+              <input id="problemSearch" type="search" placeholder="Search problems, contests, tags" />
+              <select id="statusFilter">
+                <option value="all">All statuses</option>
+                <option value="solved">Solved</option>
+                <option value="attempting">Attempting</option>
+                <option value="not_solved">Not solved</option>
+                <option value="understood">Understood</option>
+                <option value="intuition">Understood with intuition</option>
+              </select>
+            </div>
+            <div id="problemTable" class="problem-table"></div>
+          </section>
+
+          <section id="profileSection" class="section-view hidden">
+            <div class="profile-grid">
+              <article class="panel profile-card">
+                <div class="avatar" id="profileInitial">U</div>
+                <h3 id="profileEmail">User</h3>
+                <p id="profileSummary">No contests logged yet.</p>
+              </article>
+              <article class="panel">
+                <div class="panel-head">
+                  <h3>Difficulty habits</h3>
+                  <span>by problem index</span>
+                </div>
+                <div id="indexBreakdown" class="bar-list"></div>
+              </article>
+            </div>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <dialog id="contestModal">
+      <form id="contestForm" class="modal-card">
+        <div class="modal-head">
+          <div>
+            <p class="eyebrow">Contest log</p>
+            <h2>Add Codeforces contest</h2>
+          </div>
+          <button id="closeContestModal" class="icon-button" type="button" aria-label="Close">x</button>
+        </div>
+
+        <div class="form-grid">
+          <label>
+            Contest title
+            <input id="contestTitleInput" required placeholder="Codeforces Round 1045 (Div. 2)" />
+          </label>
+          <label>
+            Contest ID
+            <input id="contestIdInput" inputmode="numeric" placeholder="2134" />
+          </label>
+          <label>
+            Date
+            <input id="contestDateInput" type="date" />
+          </label>
+          <label>
+            Duration
+            <input id="contestDurationInput" placeholder="02:00" />
+          </label>
+        </div>
+
+        <label>
+          Problems
+          <textarea id="problemsInput" required rows="8" placeholder="A. Painting With Two Colors&#10;B. Add 0 or K&#10;C. Even Larger"></textarea>
+        </label>
+
+        <div class="modal-actions">
+          <button id="seed1045Button" class="ghost-button" type="button">Use Round 1045 sample</button>
+          <button class="primary-button" type="submit">Save contest</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="app.js"></script>
+  </body>
+</html>
